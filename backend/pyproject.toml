@@ -13,8 +13,37 @@ asyncpg = "*"
 greenlet = "*"
 psycopg2 = "*"
 uvicorn = "*"
+ruff = "*"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+include = [
+    "main.py",
+    "scripts/*.py",
+    "controllers/*.py",
+    "models/*.py",
+    "services/*.py"
+]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+force-single-line = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-line-length = "dynamic"

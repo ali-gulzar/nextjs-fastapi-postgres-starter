@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from models import Base
+from models.user import Base
 
 _main_uri = "postgres:postgres@localhost:5432/postgres"
 _sync_uri = f"postgresql://{_main_uri}"

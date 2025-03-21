@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from db_engine import sync_engine
-from models import User
+
+from models.user import User
+from services.db import sync_engine
 
 
 def seed_user_if_needed():

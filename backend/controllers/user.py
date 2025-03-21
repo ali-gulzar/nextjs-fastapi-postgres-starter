@@ -1,3 +1,6 @@
+from datetime import datetime
+from enum import Enum
+
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
@@ -21,6 +24,17 @@ class ThreadCreate(BaseModel):
     id: int
 
 
+class Sender(str, Enum):
+    BOT = "bot"
+    USER = "user"
+
+
+class Messages(BaseModel):
+    content: str
+    created_at: datetime
+    sender: Sender
+
+
 @router.get("/users/me")
 async def get_my_user():
     async with AsyncSession(engine) as session:
@@ -42,3 +56,20 @@ async def create_thread(user_id: int, db: AsyncSession = Depends(db_service.get_
     await db_service.add_message(thread_id=thread.id, content=content, is_bot=True, db=db)
 
     return ThreadCreate(id=thread.id)
+
+
+@router.get("/user/{user_id}/{thread_id}/messages", response_model=list[Messages])
+async def get_messages(user_id: int, thread_id: int, db: AsyncSession = Depends(db_service.get_async_session)):
+    if await db_service.get_user(user_id, db) and await db_service.get_thread(thread_id, db):
+        messages = await db_service.get_messages(thread_id, db)
+
+        return [
+            Messages(
+                content=message.content,
+                created_at=message.created_at,
+                sender=Sender.BOT if message.is_bot else Sender.USER,
+            )
+            for message in messages
+        ]
+    else:
+        return f"No messages for user {user_id} and thread {thread_id}"

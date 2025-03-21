@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -6,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from models.base import Base
 from models.message import Message
 from models.thread import Thread
+from models.user import User
 
 _main_uri = "postgres:postgres@localhost:5432/postgres"
 _sync_uri = f"postgresql://{_main_uri}"
@@ -40,3 +42,18 @@ async def add_message(thread_id: int, content: str, is_bot: bool, db: AsyncSessi
     await db.commit()
     await db.refresh(message)
     return message
+
+
+async def get_user(user_id: int, db: AsyncSession):
+    user_query = await db.execute(select(User).filter(User.id == user_id))
+    return user_query.scalar()
+
+
+async def get_thread(thread_id: int, db: AsyncSession):
+    thread_query = await db.execute(select(Thread).filter(Thread.id == thread_id))
+    return thread_query.scalar()
+
+
+async def get_messages(thread_id: int, db: AsyncSession):
+    messages_query = await db.execute(select(Message).filter(Message.thread_id == thread_id))
+    return messages_query.scalars().all()

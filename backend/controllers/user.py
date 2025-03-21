@@ -37,7 +37,7 @@ async def get_my_user():
 async def create_thread(user_id: int, db: AsyncSession = Depends(db_service.get_async_session)):
     thread = await db_service.add_thread(user_id=user_id, db=db)
 
-    content = "Welcome to the chatbot! How can I assist you today?"
+    content = "Welcome to the Hello Patient chatbot! How can I assist you today?"
     await db_service.add_message(thread_id=thread.id, content=content, is_bot=True, db=db)
 
     return ThreadCreate(id=thread.id)

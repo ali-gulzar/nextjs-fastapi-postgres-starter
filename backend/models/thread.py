@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from pydantic import BaseModel
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -17,3 +18,7 @@ class Thread(Base):
 
     user = relationship("User", back_populates="threads")
     messages = relationship("Message", back_populates="thread")
+
+
+class ThreadCreate(BaseModel):
+    id: int

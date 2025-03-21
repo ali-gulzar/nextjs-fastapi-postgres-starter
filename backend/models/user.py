@@ -1,3 +1,6 @@
+from enum import Enum
+
+from pydantic import BaseModel
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -16,3 +19,13 @@ class User(Base):
 
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r}"
+
+
+class UserRead(BaseModel):
+    id: int
+    name: str
+
+
+class Sender(str, Enum):
+    BOT = "bot"
+    USER = "user"
